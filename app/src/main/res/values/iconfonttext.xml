@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="ic_prev" translatable="false">\ue685</string>
+    <string name="ic_next" translatable="false">\ue687</string>
+
+</resources>

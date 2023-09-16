@@ -1,4 +1,4 @@
-package xixiaxixi.github.gfv
+package xixiaxixi.github.gfv.biz
 
 import android.content.Intent
 import android.net.Uri
@@ -9,7 +9,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import xixiaxixi.github.gfv.image.ImageActivity
+import xixiaxixi.github.gfv.R
+import xixiaxixi.github.gfv.biz.image.ImageActivity
 
 
 class MainActivity : AppCompatActivity() {
@@ -28,12 +29,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initRegistry()
+        initLauncher()
 
         initView()
     }
 
-    private fun initRegistry() {
+    private fun initLauncher() {
         mPickImageLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
             it?.let { onImagePicked(it) }
         }

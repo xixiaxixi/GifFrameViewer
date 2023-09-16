@@ -1,3 +1,10 @@
 <resources>
 
+    <!-- Text of current frame -->
+    <style name="TextCurrentFrame">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:background">#7F7F7F7F</item>
+    </style>
+
 </resources>
