@@ -36,8 +36,8 @@ class ImageActivityVM(
     private val _gifThumbs = MutableLiveData<List<Bitmap>>()
     val gifThumbs: LiveData<List<Bitmap>> get() = _gifThumbs
 
-    private val _currentFrameIdx = TwoWayBindingMutableLiveData(0)
-    val currentFrameIdx : TwoWayBindingLiveData<Int>
+    private val _currentFrameIdx = TwoWayBindingMutableLiveData<Int, FrameIdxChangeReason>(0)
+    val currentFrameIdx : TwoWayBindingLiveData<Int, FrameIdxChangeReason>
         get() = _currentFrameIdx
 
     // Use a wrapper to avoid redraw on bitmap. This is for future
@@ -67,20 +67,23 @@ class ImageActivityVM(
             // Prepare loop gif
             val frameDelays = (0 until it.frameCount).map { i -> it.getFrameDelay(i).toLong() }
             mLoopControl = LoopHelper(frameDelays) { i ->
-                setCurrentFrameIdx(i)
+                setCurrentFrameIdx(i, FrameIdxChangeReason.AutoLoop)
             }.build(viewModelScope).control
         }
     }
 
-    fun setCurrentFrameIdx(frameIdxInCenter: Int, isUserScroll: Boolean = false) {
-        if (isUserScroll) {
-            _currentFrameIdx.setValueWithoutDispatching(frameIdxInCenter)
-            viewModelScope.launch {
-                mLoopControl?.send(LoopHelper.LoopControl.SeekTo(frameIdxInCenter))
+    fun setCurrentFrameIdx(frameIdxInCenter: Int, setReason: FrameIdxChangeReason) {
+        when (setReason) {
+            FrameIdxChangeReason.UserScrollRv,
+            FrameIdxChangeReason.UserScrollSb -> {
+                _currentFrameIdx.setValueWithoutDispatching(frameIdxInCenter, setReason)
+                viewModelScope.launch {
+                    mLoopControl?.send(LoopHelper.LoopControl.SeekTo(frameIdxInCenter))
+                }
             }
-        } else {
-            // is from auto-loop
-            _currentFrameIdx.setValue(frameIdxInCenter)
+            else -> {
+                _currentFrameIdx.setValue(frameIdxInCenter)
+            }
         }
         mLoader?.getFrame(frameIdxInCenter)?.let {
             _currentDisplayImage.value = Wrapper(it)
@@ -102,4 +105,11 @@ class ImageActivityVM(
             ImageActivityVM(option, app)
         }
     }
+}
+
+sealed class FrameIdxChangeReason {
+    object AutoLoop : FrameIdxChangeReason()
+    object UserScrollRv : FrameIdxChangeReason()
+    object UserScrollSb : FrameIdxChangeReason()
+    object UserClickBtn : FrameIdxChangeReason()
 }

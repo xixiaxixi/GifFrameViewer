@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="ic_prev" translatable="false">\ue685</string>
     <string name="ic_next" translatable="false">\ue687</string>
-
+    <string name="ic_play" translatable="false">\ue600</string>
+    <string name="ic_pause" translatable="false">\ue920</string>
+    <string name="ic_download" translatable="false">\ue666</string>
 </resources>

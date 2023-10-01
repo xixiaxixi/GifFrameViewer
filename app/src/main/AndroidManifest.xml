@@ -24,8 +24,8 @@
 
         <activity
             android:name=".biz.image.ImageActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:exported="false"
             android:label="@string/title_activity_image"/>
     </application>
 
