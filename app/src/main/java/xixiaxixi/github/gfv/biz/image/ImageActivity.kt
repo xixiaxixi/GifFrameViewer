@@ -81,7 +81,7 @@ class ImageActivity : AppCompatActivity() {
     private fun initRv() {
         mRvFrames = findViewById(R.id.rv_frames)
         mRvFrames.setOnCurrentFrameChangedListener {
-            mVM.setCurrentFrameIdx(it, isUserScroll = true)
+            mVM.setCurrentFrameIdx(it, FrameIdxChangeReason.UserScrollRv)
         }
         mRvFrames.setOnTouchListener { _, _ ->
             mVM.setIsGifPlaying(false)
@@ -100,11 +100,17 @@ class ImageActivity : AppCompatActivity() {
 
         mBtnPrevFrame.setOnClickListener {
             mVM.setIsGifPlaying(false)
-            mVM.setCurrentFrameIdx(mVM.currentFrameIdx.getValue()?.minus(1)?.coerceAtLeast(0) ?: 0)
+            mVM.setCurrentFrameIdx(
+                mVM.currentFrameIdx.getValue()?.minus(1)?.coerceAtLeast(0) ?: 0,
+                FrameIdxChangeReason.UserClickBtn
+            )
         }
         mBtnNextFrame.setOnClickListener {
             mVM.setIsGifPlaying(false)
-            mVM.setCurrentFrameIdx(mVM.currentFrameIdx.getValue()?.plus(1)?.coerceAtMost(mVM.gifThumbs.value?.lastIndex ?: 0) ?: 0)
+            mVM.setCurrentFrameIdx(
+                mVM.currentFrameIdx.getValue()?.plus(1)?.coerceAtMost(mVM.gifThumbs.value?.lastIndex ?: 0) ?: 0,
+                FrameIdxChangeReason.UserClickBtn
+            )
         }
     }
 
@@ -113,7 +119,8 @@ class ImageActivity : AppCompatActivity() {
         mVM.gifThumbs.observe(this) { setGifThumbList(it) }
 
         mVM.currentDisplayImage.observe(this) { setDisplayImage(it.value) }
-        mVM.currentFrameIdx.observeTwoWayBinding(this) {
+
+        mVM.currentFrameIdx.observeTwoWayBinding(this, FrameIdxChangeReason.UserScrollRv) {
             mRvFrames.scrollRvToFrame(it, it != 0)
         }
 

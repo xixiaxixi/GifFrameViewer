@@ -52,9 +52,6 @@ class ImageRecyclerView @JvmOverloads constructor(context: Context, attrs: Attri
         get() = (layoutManager as LinearLayoutManager).getChildAt(0)?.width ?: 0
 
     fun scrollRvToFrame(frameIdx: Int, smooth: Boolean = true) {
-        if (frameIdx != indexOfMiddle) {
-            mOnCurrentFrameChangedListener?.invoke(frameIdx)
-        }
         if (smooth) {
             smoothScrollBy(frameIdx * childWidth - mRvTotalScroll, 0)
         } else {
